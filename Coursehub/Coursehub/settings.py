@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-z8oajc=ym(eja0zw@_3nurxyfocd-#-tjs4hh)q&)61%)3qglv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'course_app',
 ]
 
 MIDDLEWARE = [
@@ -75,8 +76,12 @@ WSGI_APPLICATION = 'Coursehub.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'course_db',  # Replace with your database name
+        'USER': 'postgres',  # Replace with your PostgreSQL username
+        'PASSWORD': 'password',  # Replace with your PostgreSQL password
+        'HOST': 'localhost',  # Default is localhost, change if using a remote database
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
 
