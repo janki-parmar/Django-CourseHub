@@ -77,11 +77,11 @@ WSGI_APPLICATION = 'Coursehub.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'course_db',  # Replace with your database name
-        'USER': 'postgres',  # Replace with your PostgreSQL username
-        'PASSWORD': 'password',  # Replace with your PostgreSQL password
-        'HOST': 'localhost',  # Default is localhost, change if using a remote database
-        'PORT': '5432',  # Default PostgreSQL port
+        'NAME': 'course_db',  
+        'USER': 'postgres',  
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
