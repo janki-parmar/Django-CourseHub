@@ -1,11 +1,61 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Instructor Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/instructor_dashboard.css' %}">
 </head>
 <body>
-    This is instructor dashboards.
+    <div class="dashboard-container">
+        <header>
+            <h1>Instructor Dashboard</h1>
+            <nav>
+                <!-- <a href="{% url 'logout' %}">Logout</a> -->
+            </nav>
+        </header>
+
+        <section class="course-list">
+            <h2>Your Courses</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                        <tr>
+                            <td>{{ course.title }}</td>
+                            <td>{{ course.description }}</td>
+                            <td>{{ course.created_at }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="3">You have no courses yet.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+
+        <section class="create-course">
+            <h2>Create New Course</h2>
+            <form action="{% url 'create_course' %}" method="POST">
+                {% csrf_token %}
+                <label for="title">Course Title:</label>
+                <input type="text" id="title" name="title" required>
+
+                <label for="description">Description:</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+
+                <button type="submit">Create Course</button>
+            </form>
+        </section>
+    </div>
 </body>
 </html>

@@ -16,3 +16,10 @@ class UserProfile(models.Model):
     firstname = models.CharField(max_length=30)
     lastname = models.CharField(max_length=30)
     role = models.CharField(max_length=15, choices=ROLE_CHOICES, default='student')
+
+
+class Courses(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
+    instructor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, limit_choices_to={'role': 'instructor'})
+    created_at = models.DateTimeField(auto_now_add=True)

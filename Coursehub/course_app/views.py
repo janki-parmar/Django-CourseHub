@@ -65,9 +65,32 @@ def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
 def instructor_dashboard(request):
-    return render(request, 'instructor_dashboard.html')
+    courses = Courses.objects.filter(instructor=request.user)
+    return render(request, 'instructor_dashboard.html', {'courses': courses})
 
 def student_dashboard(request):
     return render(request,'student_dashboard.html')
+
+
+
+########====== instructor
+def create_course(request):
+    if request.method == 'POST':
+        try:
+
+            title = request.POST['title']
+            description = request.POST['description']
+            instructor = request.user
+
+            courses = Courses.objects.create(title = title, description = description, instructor = instructor, created_at = created_at)
+            return redirect('instructor_dashboard')  
+        
+        except Exception as e:
+            logger.error(f"Error during creating course: {str(e)}")
+
+    return render(request, 'instructor_dashboard.html') 
+
+
+
                 
 
