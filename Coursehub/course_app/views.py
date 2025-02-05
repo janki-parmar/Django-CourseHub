@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import *
 import logging
 logger = logging.getLogger(__name__)
@@ -17,11 +17,13 @@ def registration(request):
             role = request.POST['role']
 
             user = UserProfile.objects.create(username = username, email = email, password = password, firstname = firstname, lastname = lastname, role = role)
+
+            return redirect('login')  
         
         except Exception as e:
             logger.error(f"Error during user registration: {str(e)}")
 
-    return render(request, 'registraton.html') 
+    return render(request, 'registration.html') 
 
 
 def login(request):
@@ -35,7 +37,7 @@ def login(request):
                 user = UserProfile.objects.get(username = username) if username else UserProfile.objects.get(email=email)
 
                 if user and user.password == password:
-                    return render(request, 'dashboard.html', {'message': 'Login successful'})
+                    return redirect('dashboard')  
                 else:
                     return render(request, 'login.html', {'error': 'Invalid credentials'})
         except Exception as e:
