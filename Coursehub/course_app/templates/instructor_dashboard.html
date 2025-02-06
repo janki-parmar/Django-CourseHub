@@ -43,19 +43,22 @@
             </table>
         </section>
 
-        <section class="create-course">
-            <h2>Create New Course</h2>
-            <form action="{% url 'create_course' %}" method="POST">
-                {% csrf_token %}
-                <label for="title">Course Title:</label>
-                <input type="text" id="title" name="title" required>
+        <form action="{% url 'create_course' %}" method="POST">
+            {% csrf_token %}
+            <input type="hidden" id="auth_token" name="auth_token" value="{{ token }}">
 
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" rows="4"></textarea>
-
-                <button type="submit">Create Course</button>
-            </form>
-        </section>
+            <label for="title">Course Title:</label>
+            <input type="text" id="title" name="title" required>
+        
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+        
+            <label for="instructor">Instructor</label>
+            <input type="text" id="instructor" name="instructor" required>
+        
+            <button type="submit">Create Course</button>
+        </form>
+        
     </div>
 </body>
 </html>

@@ -1,12 +1,16 @@
 from django.shortcuts import render, redirect
-from .models import *
 from django.contrib.auth.hashers import make_password, check_password
+from django.views.decorators.csrf import csrf_exempt
+
+from .models import *
+from .middleware import *
+
 import logging
 logger = logging.getLogger(__name__)
 
 # Create your views here.
 
-
+@csrf_exempt
 def registration(request):
     if request.method == 'POST':
         try :
@@ -27,7 +31,7 @@ def registration(request):
 
     return render(request, 'registration.html') 
 
-
+@csrf_exempt
 def login(request):
     if request.method == 'POST':
 
@@ -38,20 +42,21 @@ def login(request):
         try :   
                 if '@' in username_email:
                     user = UserProfile.objects.get(email = username_email)
-                    print("=------------emiallll")
                 else:
                     user = UserProfile.objects.get(username = username_email)
-                    print("=------------name")
 
                 if check_password(password, user.password):
-                    if user.role == 'admin':
-                        return redirect('admin_dashboard') 
-                    elif user.role == 'instructor':
-                        return redirect('instructor_dashboard')
-                    elif user.role == 'student':
-                        return redirect('student_dashboard')
-                    else:
-                        return render(request, 'login.html', {'error': 'Role not defined'})
+                      
+                      token = encode_jwt(user)
+                      
+                      if user.role == 'admin':
+                            return redirect('admin_dashboard') 
+                      elif user.role == 'instructor':
+                            return redirect('instructor_dashboard')
+                      elif user.role == 'student':
+                            return redirect('student_dashboard')
+                      else:
+                            return render(request, 'login.html', {'error': 'Role not defined'})
                    
                 else:
                     return render(request, 'login.html', {'error': 'Invalid credentials'})
@@ -61,19 +66,34 @@ def login(request):
     return render(request, 'login.html')
 
 
+@csrf_exempt
+def logout(request):
+    pass
+
+@csrf_exempt
 def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
+@csrf_exempt
+@role_based_access
 def instructor_dashboard(request):
-    courses = Courses.objects.filter(instructor=request.user)
-    return render(request, 'instructor_dashboard.html', {'courses': courses})
+    # Create JWT token using user_id and user_role from request object
+    token = encode_jwt({'id': request.user_id, 'role': request.user_role})
 
+    # Retrieve courses based on user_id (instructor)
+    courses = Courses.objects.filter(instructor=request.user_id)
+    return render(request, 'instructor_dashboard.html', {'courses': courses, 'token': token})
+
+
+@csrf_exempt
 def student_dashboard(request):
     return render(request,'student_dashboard.html')
 
 
 
 ########====== instructor
+@csrf_exempt
+@role_based_access
 def create_course(request):
     if request.method == 'POST':
         try:
@@ -82,7 +102,7 @@ def create_course(request):
             description = request.POST['description']
             instructor = request.user
 
-            courses = Courses.objects.create(title = title, description = description, instructor = instructor, created_at = created_at)
+            courses = Courses.objects.create(title = title, description = description, instructor = instructor)
             return redirect('instructor_dashboard')  
         
         except Exception as e:
