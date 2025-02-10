@@ -3,7 +3,6 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
-from .middleware import *
 
 import logging
 logger = logging.getLogger(__name__)
@@ -46,9 +45,8 @@ def login(request):
                     user = UserProfile.objects.get(username = username_email)
 
                 if check_password(password, user.password):
-                      
-                      token = encode_jwt(user)
-                      
+                      request.session['user_id'] = user.id
+
                       if user.role == 'admin':
                             return redirect('admin_dashboard') 
                       elif user.role == 'instructor':
@@ -75,14 +73,15 @@ def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
 @csrf_exempt
-@role_based_access
 def instructor_dashboard(request):
-    # Create JWT token using user_id and user_role from request object
-    token = encode_jwt({'id': request.user_id, 'role': request.user_role})
 
-    # Retrieve courses based on user_id (instructor)
-    courses = Courses.objects.filter(instructor=request.user_id)
-    return render(request, 'instructor_dashboard.html', {'courses': courses, 'token': token})
+    instructor = UserProfile.objects.get(id=request.session.get('user_id'))
+    
+    if instructor.role == 'instructor':
+        courses = Courses.objects.filter(instructor=instructor)
+
+    # courses = Courses.objects.filter(instructor=request.user.id)
+        return render(request, 'instructor_dashboard.html', {'courses': courses})
 
 
 @csrf_exempt
@@ -93,22 +92,28 @@ def student_dashboard(request):
 
 ########====== instructor
 @csrf_exempt
-@role_based_access
 def create_course(request):
     if request.method == 'POST':
         try:
 
             title = request.POST['title']
             description = request.POST['description']
-            instructor = request.user
 
+            instructor = UserProfile.objects.get(id=request.session.get('user_id'))
+            
             courses = Courses.objects.create(title = title, description = description, instructor = instructor)
+    
             return redirect('instructor_dashboard')  
         
         except Exception as e:
             logger.error(f"Error during creating course: {str(e)}")
 
-    return render(request, 'instructor_dashboard.html') 
+    return render(request, 'create_course_form.html') 
+
+
+@csrf_exempt
+def create_course_form(request):
+    return render(request, 'create_course_form.html')
 
 
 

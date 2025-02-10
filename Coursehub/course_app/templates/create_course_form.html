@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Course</title>
+    <link rel="stylesheet" href="{% static 'css/create_course_form.css' %}">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Create Course</h1>
+        </header>
+
+        <form action="{% url 'create_course' %}" method="POST">
+            {% csrf_token %}
+            <label for="title">Course Title:</label>
+            <input type="text" id="title" name="title" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4"></textarea>
+
+            <button type="submit">Create Course</button>
+        </form>
+    </div>
+</body>
+</html>

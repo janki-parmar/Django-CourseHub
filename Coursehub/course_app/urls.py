@@ -10,4 +10,5 @@ urlpatterns = [
     path('dashboard/student', views.student_dashboard, name= 'student_dashboard'),
 
     path('create_course', views.create_course, name= 'create_course'),
+    path('create_course_form', views.create_course_form, name= 'create_course_form'),
 ]

@@ -6,59 +6,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Instructor Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/instructor_dashboard.css' %}">
 </head>
 <body>
     <div class="dashboard-container">
         <header>
-            <h1>Instructor Dashboard</h1>
-            <nav>
-                <!-- <a href="{% url 'logout' %}">Logout</a> -->
-            </nav>
+            <h1 class="dashboard-title">Instructor Dashboard</h1>
         </header>
 
-        <section class="course-list">
-            <h2>Your Courses</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Created At</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div class="main-content">
+            <!-- Course List Section -->
+            <section class="course-list">
+                <div class="course-list-header">
+                    <h2 class="course-list-title">Your Courses</h2>
+                    <a href="{% url 'create_course_form' %}" class="add-course-button">+ Add Course</a>
+                </div>
+                <div class="course-card-container">
                     {% for course in courses %}
-                        <tr>
-                            <td>{{ course.title }}</td>
-                            <td>{{ course.description }}</td>
-                            <td>{{ course.created_at }}</td>
-                        </tr>
+                        <div class="course-card">
+                            <h3 class="course-title">{{ course.title }}</h3>
+                            <p class="course-description">{{ course.description }}</p>
+                            <p class="course-created-at">Created on {{ course.created_at|date:"F j, Y" }}</p>
+                        </div>
                     {% empty %}
-                        <tr>
-                            <td colspan="3">You have no courses yet.</td>
-                        </tr>
+                        <div class="empty-message">
+                            <p>You have no courses yet. Start creating your first course!</p>
+                        </div>
                     {% endfor %}
-                </tbody>
-            </table>
-        </section>
-
-        <form action="{% url 'create_course' %}" method="POST">
-            {% csrf_token %}
-            <input type="hidden" id="auth_token" name="auth_token" value="{{ token }}">
-
-            <label for="title">Course Title:</label>
-            <input type="text" id="title" name="title" required>
-        
-            <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4"></textarea>
-        
-            <label for="instructor">Instructor</label>
-            <input type="text" id="instructor" name="instructor" required>
-        
-            <button type="submit">Create Course</button>
-        </form>
-        
+                </div>
+            </section>
+        </div>
     </div>
 </body>
 </html>
