@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.hashers import make_password, check_password
 from django.views.decorators.csrf import csrf_exempt
 
@@ -72,6 +72,10 @@ def logout(request):
 def admin_dashboard(request):
     return render(request, 'admin_dashboard.html')
 
+
+
+
+########====== instructor
 @csrf_exempt
 def instructor_dashboard(request):
 
@@ -80,17 +84,9 @@ def instructor_dashboard(request):
     if instructor.role == 'instructor':
         courses = Courses.objects.filter(instructor=instructor)
 
-    # courses = Courses.objects.filter(instructor=request.user.id)
         return render(request, 'instructor_dashboard.html', {'courses': courses})
+    
 
-
-@csrf_exempt
-def student_dashboard(request):
-    return render(request,'student_dashboard.html')
-
-
-
-########====== instructor
 @csrf_exempt
 def create_course(request):
     if request.method == 'POST':
@@ -115,6 +111,48 @@ def create_course(request):
 def create_course_form(request):
     return render(request, 'create_course_form.html')
 
+@csrf_exempt
+def update_course(request):
+
+    if request.method == 'POST':
+        pass
+        
+
+
+########====== student
+@csrf_exempt
+def student_dashboard(request):
+    student = UserProfile.objects.get(id=request.session.get('user_id'))
+    
+    # Tab selection logic based on the query parameter
+    selected_tab = request.GET.get('tab', 'available')
+    
+    courses = Courses.objects.all() if selected_tab == 'available' else []
+    enrollments = Enrollment.objects.filter(student=student) if selected_tab == 'enrolled' else []
+
+    context = {
+        'student': student,
+        'courses': courses,
+        'enrollments': enrollments,
+        'selected_tab': selected_tab  # Pass selected tab to the template
+    }
+
+    return render(request, 'student_dashboard.html', context)
+
+
+@csrf_exempt
+def enroll(request, course_id):
+
+    if request.method == 'POST': 
+        student = UserProfile.objects.get(id=request.session.get('user_id'))
+        course = get_object_or_404(Courses, id=course_id)
+        
+        # Check if already enrolled
+        if not Enrollment.objects.filter(student=student, course=course).exists():
+            Enrollment.objects.create(student=student, course=course)
+
+    return redirect('student_dashboard')
+    
 
 
                 

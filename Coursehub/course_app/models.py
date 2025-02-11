@@ -23,3 +23,9 @@ class Courses(models.Model):
     description = models.TextField(blank=True, null=True)
     instructor = models.ForeignKey(UserProfile, on_delete=models.CASCADE, limit_choices_to={'role': 'instructor'})
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Enrollment(models.Model):
+    student = models.ForeignKey(UserProfile, on_delete=models.CASCADE, limit_choices_to={'role': 'student'})
+    course = models.ForeignKey(Courses, on_delete=models.CASCADE)
+    enrolled_at = models.DateTimeField(auto_now_add=True)

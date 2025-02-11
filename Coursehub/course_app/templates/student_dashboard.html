@@ -1,11 +1,69 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=\, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="{% static 'css/student_dashboard.css' %}">
 </head>
 <body>
-   This is student dashboards. 
+  <div class="dashboard-container">
+    <header class="dashboard-header">
+      <h1>Welcome, {{ student.username }}</h1>
+    </header>
+
+    <div class="dashboard-content">
+      <!-- Sidebar for navigation -->
+      <nav class="sidebar">
+        <ul>
+          <li class="{% if selected_tab == 'available' %}active{% endif %}">
+            <a href="?tab=available">Available Courses</a>
+          </li>
+          <li class="{% if selected_tab == 'enrolled' %}active{% endif %}">
+            <a href="?tab=enrolled">Enrolled Courses</a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Content Section -->
+      <div class="content-section">
+        {% if selected_tab == 'available' %}
+          <!-- <h2>Available Courses</h2> -->
+          <div class="course-list">
+            {% for course in courses %}
+              <div class="course-card">
+                <h3>{{ course.title }}</h3>
+                <p>{{ course.description }}</p>
+                <p>Instructor: {{ course.instructor.username }}</p>
+                <form action="{% url 'enroll' course.id %}" method="POST">
+                  {% csrf_token %}
+                  <button type="submit">Enroll Now</button>
+                </form>
+              </div>
+            {% empty %}
+              <p>No courses available.</p>
+            {% endfor %}
+          </div>
+        {% elif selected_tab == 'enrolled' %}
+          <!-- <h2>Enrolled Courses</h2> -->
+          <div class="course-list">
+            {% for enrollment in enrollments %}
+              <div class="course-card">
+                <h3>{{ enrollment.course.title }}</h3>
+                <p>{{ enrollment.course.description }}</p>
+                <span>Enrolled on: {{ enrollment.enrolled_at }}</span>
+              </div>
+            {% empty %}
+              <p>No enrolled courses.</p>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p>Please select a section from the sidebar.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </body>
 </html>
