@@ -81,6 +81,9 @@ header {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 15px;
     transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .course-card:hover {
@@ -103,6 +106,49 @@ header {
 .course-created-at {
     font-size: 0.75em;
     color: #94a3b8;
+}
+
+/* Course Actions - Keep buttons aligned */
+.course-actions {
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+
+/* General Button Styling */
+.update-button,
+.delete-button {
+    padding: 4px 8px;  /* Smaller size */
+    font-size: 0.75em;  /* Smaller text */
+    border-radius: 4px; /* Subtle rounded corners */
+    text-decoration: none;
+    font-weight: 500;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Soft Blue Update Button */
+.update-button {
+    background-color: #93c5fd;  /* Light Blue */
+    color: #1e3a8a;  /* Deep blue text */
+}
+
+.update-button:hover {
+    background-color: #60a5fa;  /* Slightly darker blue */
+    transform: translateY(-1px);
+}
+
+/* Soft Red Delete Button */
+.delete-button {
+    background-color: #fca5a5;  /* Light Red */
+    color: #7f1d1d;  /* Dark red text */
+}
+
+.delete-button:hover {
+    background-color: #f87171;  /* Slightly darker red */
+    transform: translateY(-1px);
 }
 
 .empty-message {

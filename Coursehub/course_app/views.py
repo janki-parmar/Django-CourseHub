@@ -112,10 +112,38 @@ def create_course_form(request):
     return render(request, 'create_course_form.html')
 
 @csrf_exempt
-def update_course(request):
+def update_course(request,course_id):
+    
+    try :
+        data = Courses.objects.get(id = course_id)
 
-    if request.method == 'POST':
-        pass
+        if request.method == 'POST':
+           
+            title = request.POST.get('title', data.title)
+            description = request.POST.get('description', data.description)
+            created_at = request.POST.get('created_at',data.created_at)
+
+            data.title = title
+            data.description = description
+            data.created_at = created_at
+            data.save()
+            return redirect('instructor_dashboard')
+
+        return render(request, 'update_course_form.html', {'course': data})
+
+    except Exception as e:
+            logger.error(f"Error during updating course: {str(e)}")
+            return redirect('instructor_dashboard')
+
+
+
+
+
+@csrf_exempt
+def delete_course(request,course_id):
+    pass
+
+        
         
 
 
